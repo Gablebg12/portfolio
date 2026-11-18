@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio · 3D, animation, jeu vidéo</title>
+  <meta name="description" content="Modèles 3D ultra-réalistes, films d'animation, jeu vidéo et automatisations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=Anton&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><path d='M8 22 16 8l8 14z' fill='%23ff7a3d'/></svg>">
+</head>
+<body>
+  <header class="nav">
+    <a class="nav-logo" href="#haut" id="nav-nom">Portfolio</a>
+    <nav>
+      <a href="#modeles">Modèles 3D</a>
+      <a href="#films">Films 3D</a>
+      <a href="#jeu">Jeu vidéo</a>
+      <a href="#auto">Automatisation</a>
+      <a href="#moi">Qui je suis</a>
+    </nav>
+  </header>
+
+  <main id="haut">
+    <section class="hero">
+      <p class="eyebrow" id="hero-accroche"></p>
+      <h1 id="hero-nom"></h1>
+      <p class="hero-intro" id="hero-intro"></p>
+      <div class="hero-cats">
+        <a href="#modeles"><span>01</span>Modèles 3D</a>
+        <a href="#films"><span>02</span>Films 3D</a>
+        <a href="#jeu"><span>03</span>Jeu vidéo</a>
+        <a href="#auto"><span>04</span>Automatisation</a>
+      </div>
+      <div class="scroll-hint">Fais défiler</div>
+    </section>
+
+    <section id="modeles" class="cat">
+      <div class="cat-head wrap"><span class="cat-num">01</span><h2>Modèles 3D</h2></div>
+      <div id="modeles-liste"></div>
+    </section>
+
+    <section id="films" class="cat wrap">
+      <div class="cat-head"><span class="cat-num">02</span><h2>Films 3D</h2></div>
+      <div id="films-contenu"></div>
+    </section>
+
+    <section id="jeu" class="cat wrap">
+      <div class="cat-head"><span class="cat-num">03</span><h2>Jeu vidéo</h2></div>
+      <div id="jeu-contenu"></div>
+    </section>
+
+    <section id="auto" class="cat wrap">
+      <div class="cat-head"><span class="cat-num">04</span><h2>Automatisation</h2></div>
+      <div id="auto-contenu"></div>
+    </section>
+
+    <section id="moi" class="cat wrap">
+      <div class="cat-head"><span class="cat-num">05</span><h2>Qui je suis</h2></div>
+      <div id="moi-contenu"></div>
+    </section>
+  </main>
+
+  <footer class="footer wrap" id="footer"></footer>
+
+  <!-- Visionneuse d'images -->
+  <div class="modal" id="lightbox" hidden>
+    <button class="modal-close" aria-label="Fermer">✕</button>
+    <figure class="lightbox-fig"><img alt=""><figcaption></figcaption></figure>
+  </div>
+
+  <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+    } }
+  </script>
+  <script src="data/projets.js"></script>
+  <script src="assets/app.js"></script>
+  <script type="module" src="assets/maison3d.js"></script>
+  <script src="assets/sequence.js"></script>
+</body>
+</html>
