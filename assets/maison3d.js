@@ -10,6 +10,91 @@ const loader = new GLTFLoader().setDRACOLoader(draco);
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const smooth = t => t * t * (3 - 2 * t);
 
+/* ---------- herbe : les pelouses arrivent de Blender en simples surfaces (l'herbe procédurale n'existe pas sur le web).
+   On leur donne une texture d'herbe dessinée dans un canevas (raccordable) et on y plante des milliers de touffes. ---------- */
+let texHerbeCache;
+function texHerbe() {
+  if (texHerbeCache) return texHerbeCache;
+  const N = 512, c = document.createElement("canvas"); c.width = c.height = N;
+  const g = c.getContext("2d");
+  g.fillStyle = "#56762f"; g.fillRect(0, 0, N, N);
+  const r = (a, b) => a + Math.random() * (b - a);
+  const enBoucle = f => { for (const dx of [-N, 0, N]) for (const dy of [-N, 0, N]) f(dx, dy); };
+  // grandes taches plus claires / plus sombres
+  for (let i = 0; i < 60; i++) {
+    const x = r(0, N), y = r(0, N), rad = r(30, 120), clair = Math.random() < 0.5;
+    const col = clair ? `rgba(140,170,70,${r(.12, .25)})` : `rgba(40,62,22,${r(.12, .25)})`;
+    enBoucle((dx, dy) => { const gr = g.createRadialGradient(x + dx, y + dy, 0, x + dx, y + dy, rad);
+      gr.addColorStop(0, col); gr.addColorStop(1, "rgba(0,0,0,0)"); g.fillStyle = gr; g.fillRect(x + dx - rad, y + dy - rad, rad * 2, rad * 2); });
+  }
+  // brins
+  const pal = ["#3f5c22", "#4d6d29", "#5e8233", "#6f923b", "#86a64a", "#9cb85a", "#36511d"];
+  g.lineCap = "round";
+  for (let i = 0; i < 14000; i++) {
+    const x = r(0, N), y = r(0, N), l = r(3, 9), a = r(-0.6, 0.6) - Math.PI / 2;
+    g.strokeStyle = pal[(Math.random() * pal.length) | 0]; g.globalAlpha = r(.45, .95); g.lineWidth = r(.8, 1.8);
+    enBoucle((dx, dy) => { g.beginPath(); g.moveTo(x + dx, y + dy); g.lineTo(x + dx + Math.cos(a) * l, y + dy + Math.sin(a) * l); g.stroke(); });
+  }
+  g.globalAlpha = 1;
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  return (texHerbeCache = t);
+}
+function touffe() {   // trois brins croisés, base sombre -> pointe claire
+  const pos = [], col = [];
+  for (let k = 0; k < 3; k++) {
+    const a = k * Math.PI / 3 + Math.random() * 0.4, w = 0.035, lean = (Math.random() - 0.5) * 0.35;
+    const cx = Math.cos(a) * w, cz = Math.sin(a) * w;
+    pos.push(-cx, 0, -cz, cx, 0, cz, lean, 1, lean * 0.6);
+    col.push(.45, .5, .35, .45, .5, .35, 1, 1, .9);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+  geo.computeVertexNormals();
+  return geo;
+}
+function herbe(root) {
+  root.updateMatrixWorld(true);
+  const pelouses = [];
+  root.traverse(o => { if (o.isMesh && /pelouse/i.test(o.name + " " + (o.parent?.name || ""))) pelouses.push(o); });
+  if (!pelouses.length) return;
+  const tex = texHerbe(), v = new THREE.Vector3();
+  const tris = [];
+  let aire = 0;
+  for (const o of pelouses) {
+    const geo = o.geometry, p = geo.attributes.position, idx = geo.index;
+    // coordonnées de texture à plat, en mètres : un motif tous les 1,6 m
+    const uv = new Float32Array(p.count * 2);
+    for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i).applyMatrix4(o.matrixWorld); uv[2 * i] = v.x / 1.6; uv[2 * i + 1] = v.z / 1.6; }
+    geo.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+    o.material = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0 });
+    o.receiveShadow = true; o.castShadow = false;
+    const n = idx ? idx.count : p.count, get = i => new THREE.Vector3().fromBufferAttribute(p, idx ? idx.getX(i) : i).applyMatrix4(o.matrixWorld);
+    for (let i = 0; i < n; i += 3) {
+      const a = get(i), b = get(i + 1), c = get(i + 2);
+      const s = new THREE.Vector3().subVectors(b, a).cross(new THREE.Vector3().subVectors(c, a)).length() / 2;
+      if (s > 1e-4) { tris.push([a, b, c, s]); aire += s; }
+    }
+  }
+  const nb = Math.min(42000, Math.round(aire * 45));
+  const brin = new THREE.InstancedMesh(touffe(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, side: THREE.DoubleSide }), nb);
+  const m = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), coul = new THREE.Color();
+  const verts = [[0.30, 0.46, 0.16], [0.36, 0.52, 0.19], [0.42, 0.56, 0.22], [0.27, 0.40, 0.14], [0.50, 0.60, 0.26]];
+  for (let i = 0; i < nb; i++) {
+    let x = Math.random() * aire, t = tris[0];
+    for (const tr of tris) { if ((x -= tr[3]) <= 0) { t = tr; break; } }
+    let u = Math.random(), w = Math.random(); if (u + w > 1) { u = 1 - u; w = 1 - w; }
+    const p = t[0].clone().addScaledVector(new THREE.Vector3().subVectors(t[1], t[0]), u).addScaledVector(new THREE.Vector3().subVectors(t[2], t[0]), w);
+    q.setFromAxisAngle(up, Math.random() * Math.PI * 2);
+    const h = 0.07 + Math.random() * 0.1, l = 0.8 + Math.random() * 0.7;
+    sc.set(l, h, l); m.compose(p, q, sc); brin.setMatrixAt(i, m);
+    brin.setColorAt(i, coul.setRGB(...verts[(Math.random() * verts.length) | 0]));
+  }
+  brin.castShadow = false; brin.receiveShadow = true;
+  root.add(brin);
+}
+
 function setup(sec) {
   const holder = sec.querySelector(".m3d-canvas");
   const etapes = [...sec.querySelectorAll(".m3d-etape")];
@@ -98,6 +183,7 @@ function setup(sec) {
         const mats = Array.isArray(o.material) ? o.material : [o.material];
         mats.forEach(mt => { if (mt.transparent) { mt.depthWrite = false; o.castShadow = false; } mt.side = THREE.FrontSide; });
       });
+      herbe(m);
       // mise à l'échelle : la plus grande dimension au sol vaut 2 unités, posée à y = 0, centrée
       const box = new THREE.Box3().setFromObject(m), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
       const sc = 2 / Math.max(size.x, size.z);

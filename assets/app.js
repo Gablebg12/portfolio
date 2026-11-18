@@ -117,6 +117,8 @@
     h("div", { class: "jeu-hero reveal" }, boucle({ ...J.trailer, titre: "Trailer" })),
     h("h3", { class: "jeu-titre" }, J.titre), h("div", { class: "jeu-ancien" }, `Anciennement « ${J.ancienNom} »`),
     h("p", { class: "accroche" }, J.accroche),
+    J.pointFort ? h("div", { class: "point-fort reveal" }, h("div", { class: "pf-icone", "aria-hidden": "true" }, "🌐"),
+      h("div", {}, h("b", {}, J.pointFort.titre), h("span", {}, J.pointFort.texte))) : "",
     h("div", { class: "grid2 reveal" },
       h("div", { class: "texte" }, J.description.map(txt),
         h("ul", { class: "fonctions" }, J.fonctions.map(f => h("li", {}, f))), tags(J.tags)),
@@ -157,7 +159,7 @@
       h("div", { class: "timeline" },
         h("div", {}, h("h4", {}, "Études"), M.etudes.map(item)),
         h("div", {}, h("h4", {}, "Expériences"), M.experiences.map(item))),
-      M.cv ? h("a", { class: "bouton", href: M.cv, download: "" }, "Télécharger mon CV")
+      M.cv ? h("a", { class: "bouton", href: M.cv, download: "Gabriel Lecerf - CV.pdf" }, "Télécharger mon CV")
            : h("span", { class: "bouton", "aria-disabled": "true" }, "CV : bientôt disponible"))));
 
   $("#footer").append(

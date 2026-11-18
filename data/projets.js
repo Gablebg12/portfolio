@@ -125,6 +125,8 @@ window.PORTFOLIO = {
     titre: "The Last Fight",
     ancienNom: "33Fight",
     accroche: "8,2 milliards d'humains. Un tournoi. Un seul survivant.",
+    // mis en avant juste sous l'accroche
+    pointFort: { titre: "Mode en ligne", texte: "Affronte un ami à distance en 1 contre 1, ou à deux sur le même écran en local." },
     description: [
       "Un projet que j'avais en tête depuis plusieurs mois. Grâce à l'IA, j'ai pu le créer en très peu de temps.",
       "Un jeu de boxe satirique à la première personne, développé sous Unity 6 : tu affrontes 33 adversaires générés au hasard, du bébé au boss, jusqu'à être le dernier humain debout.",
@@ -136,10 +138,10 @@ window.PORTFOLIO = {
       "33 adversaires générés",
       "6 arènes",
       "Cartes de bonus entre les combats",
-      "Mode 2 joueurs, local et en ligne",
+      "Mode en ligne et 2 joueurs en local",
       "Français et anglais"
     ],
-    chiffres: [["33", "combats"], ["6", "arènes"], ["180+", "tests automatisés"], ["2", "joueurs"]],
+    chiffres: [["33", "combats"], ["6", "arènes"], ["180+", "tests automatisés"], ["En ligne", "1 contre 1"]],
     tags: ["Unity 6.3", "C#", "URP", "Réseau"],
     trailer: { src: "media/33fight/trailer.mp4", poster: "media/33fight/combat.jpg", son: true },
     captures: [
@@ -172,7 +174,7 @@ window.PORTFOLIO = {
 
   /* ----- 5. QUI JE SUIS -------------------------------------------------- */
   moi: {
-    photo: null, // ex. "media/moi/photo.jpg"
+    photo: "media/moi/photo.jpg",
     texte: [
       "J'ai {age} ans et je suis en dernière année de licence Information-Communication, spécialité jeux vidéo et médias interactifs, à l'UCO de Laval.",
       "Ce qui me passionne, ce sont les nouvelles technologies, et l'IA en particulier. Tous les projets de ce portfolio ont été réalisés en dirigeant une IA (Claude Code) comme une équipe de production. Je définis l'objectif, je découpe le travail, je vérifie chaque étape et je corrige jusqu'au résultat. L'IA écrit le code, et je décide de ce qui est bon.",
@@ -199,6 +201,6 @@ window.PORTFOLIO = {
     competences: ["Claude Code / IA", "Blender", "Python", "Unity / C#", "n8n", "Node.js", "3ds Max", "Substance Painter", "Photoshop", "Impression 3D"],
     langues: ["Français (langue maternelle)", "Anglais (B2)", "Espagnol (A2)"],
     passions: ["IA et nouvelles technologies", "Football", "MMA"],
-    cv: null // ex. "media/moi/CV.pdf" (bouton désactivé tant que vide)
+    cv: "media/moi/CV.pdf" // version SANS téléphone, générée par Desktop/cv_boulot/CV 2026/source/generer.js
   }
 };
