@@ -30,9 +30,26 @@ h1, h2, h3 { font-family: var(--title); line-height: 1.05; margin: 0; letter-spa
 .nav nav a { text-decoration: none; color: var(--mute); font-size: 14px; white-space: nowrap; transition: color .2s; }
 .nav nav a:hover, .nav nav a.actif { color: var(--txt); }
 
+/* ---------- écran d entrée (nom sur fond noir) ---------- */
+.rideau-fond { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, #0b0b0e 0%, #0b0b0e 52%, #2a2a30 70%, #9a9aa2 86%, #ffffff 100%); }
+.rideau { height: 100vh; height: 100svh; display: grid; place-items: center; position: relative; padding: 0 16px; }
+.rideau-nom { font-family: var(--title); font-weight: 700; color: #fff; text-align: center; line-height: .92; letter-spacing: -.035em;
+  font-size: clamp(56px, 15vw, 210px); will-change: transform, opacity; translate: 0 -6vh; }
+.rideau-nom span { display: block; }
+.rideau-nom .acc { color: var(--acc); }
+.rideau-hint { position: absolute; bottom: 30px; left: 50%; translate: -50% 0; color: #111114; font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; text-align: center; }
+.rideau-hint::after { content: ""; display: block; width: 14px; height: 14px; margin: 10px auto 0; border-right: 2px solid var(--acc); border-bottom: 2px solid var(--acc); rotate: 45deg; animation: fleche 1.6s ease-in-out infinite; }
+@keyframes fleche { 0%, 100% { transform: translate(0, 0); opacity: .4; } 50% { transform: translate(5px, 5px); opacity: 1; } }
+.nav { transition: background .35s, border-color .35s; }
+.nav.sur-noir { background: transparent; backdrop-filter: none; border-bottom-color: transparent; }
+.nav.sur-noir .nav-logo { color: #fff; }
+.nav.sur-noir nav a { color: rgba(255,255,255,.7); }
+.nav.sur-noir nav a:hover { color: #fff; }
+
 /* ---------- hero ---------- */
 .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px 24px 60px; max-width: var(--wrap); margin: 0 auto; position: relative; }
-.hero h1 { font-size: clamp(48px, 10vw, 128px); }
+.hero h1 { font-size: clamp(44px, 8vw, 104px); }
 .hero-intro { font-size: clamp(18px, 2.2vw, 24px); color: var(--mute); max-width: 720px; margin: 26px 0 48px; }
 .hero-cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 900px; }
 .hero-cats a { text-decoration: none; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg2); font-weight: 600; transition: border-color .2s, transform .2s; }

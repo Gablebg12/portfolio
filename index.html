@@ -12,6 +12,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111'/><path d='M8 22 16 8l8 14z' fill='%23ff7a3d'/></svg>">
 </head>
 <body>
+  <div class="rideau-fond" id="rideau-fond" aria-hidden="true"></div>
   <header class="nav">
     <a class="nav-logo" href="#haut" id="nav-nom">Portfolio</a>
     <nav>
@@ -24,6 +25,11 @@
   </header>
 
   <main id="haut">
+    <section class="rideau" id="rideau">
+      <div class="rideau-nom" id="rideau-nom"></div>
+      <div class="rideau-hint">Descends</div>
+    </section>
+
     <section class="hero">
       <p class="eyebrow" id="hero-accroche"></p>
       <h1 id="hero-nom"></h1>
@@ -34,7 +40,6 @@
         <a href="#jeu"><span>03</span>Jeu vidéo</a>
         <a href="#auto"><span>04</span>Automatisation</a>
       </div>
-      <div class="scroll-hint">Fais défiler</div>
     </section>
 
     <section id="modeles" class="cat">

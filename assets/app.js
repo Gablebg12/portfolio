@@ -56,6 +56,25 @@
   $("#nav-nom").textContent = isPlaceholder(id.nom) ? "Portfolio" : id.nom;
   $("#hero-accroche").textContent = id.accroche;
   $("#hero-intro").textContent = id.intro;
+  { // écran d entrée : nom en grand sur fond noir, qui s efface en descendant
+    const [pre, ...reste] = id.nom.split(" ");
+    $("#rideau-nom").append(h("span", {}, pre), " ", h("span", { class: "acc" }, reste.join(" ")));
+    const fond = $("#rideau-fond"), nomR = $("#rideau-nom"), nav = $(".nav"), indice = $(".rideau-hint");
+    let att = false;
+    const maj = () => {
+      att = false;
+      const k = Math.min(1, scrollY / (innerHeight * 0.75));
+      fond.style.opacity = (1 - k) * (1 - k);
+      indice.style.opacity = Math.max(0, 1 - k * 4);
+      fond.style.visibility = k >= 1 ? "hidden" : "visible";
+      nomR.style.opacity = 1 - k * 1.2;
+      nomR.style.transform = `translateY(${scrollY * 0.35}px) scale(${1 - k * 0.08})`;
+      nav.classList.toggle("sur-noir", k < 0.3);
+    };
+    addEventListener("scroll", () => { if (!att) { att = true; requestAnimationFrame(maj); } }, { passive: true });
+    addEventListener("resize", maj);
+    maj();
+  }
   if (!isPlaceholder(id.nom)) document.title = `${id.nom} · Portfolio`;
 
   /* ---------- 1. modèles 3D ---------- */
