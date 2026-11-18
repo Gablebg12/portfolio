@@ -67,7 +67,7 @@ window.PORTFOLIO = {
         { src: "media/maisons/blender/longere_materiaux.jpg", legende: "Aperçu des matériaux" }
       ],
       // vidéo déjà accélérée ×2 au montage (80 s -> 40 s), lue en boucle sans clic
-      video: { src: "media/maisons/longere_presentation.mp4", poster: "media/maisons/longere_presentation.jpg",
+      video: { src: "media/maisons/longere_presentation.mp4", mobile: "media/maisons/longere_presentation_m.mp4", poster: "media/maisons/longere_presentation.jpg",
                titre: "Vidéo de présentation" }
     },
     {
@@ -108,7 +108,7 @@ window.PORTFOLIO = {
     titre: "Séries d'animation foot",
     intro: "Des séries verticales pour TikTok et YouTube Shorts, entièrement faites dans Blender. Je donne un scénario bref, et l'IA en tire une vraie histoire, découpée en épisodes de 30 à 55 secondes qui finissent sur un choix. Chaque épisode a réuni entre 1 000 et 3 000 vues sur YouTube Shorts.",
     // lue en boucle, son coupé par défaut (bouton pour l'activer, coupé dès que la vidéo sort de l'écran)
-    episode: { src: "media/foot/la_remontada_ep01.mp4", poster: "media/foot/la_remontada_ep01.jpg",
+    episode: { src: "media/foot/la_remontada_ep01.mp4", mobile: "media/foot/la_remontada_ep01_m.mp4", poster: "media/foot/la_remontada_ep01.jpg",
                titre: "La Remontada · Épisode 01", son: true },
     methode: [
       ["Je donne le scénario", "Une trame courte : les personnages, l'enjeu et le choix de fin d'épisode."],
@@ -143,7 +143,7 @@ window.PORTFOLIO = {
     ],
     chiffres: [["33", "combats"], ["6", "arènes"], ["180+", "tests automatisés"], ["En ligne", "1 contre 1"]],
     tags: ["Unity 6.3", "C#", "URP", "Réseau"],
-    trailer: { src: "media/33fight/trailer.mp4", poster: "media/33fight/combat.jpg", son: true },
+    trailer: { src: "media/33fight/trailer.mp4", mobile: "media/33fight/trailer_m.mp4", poster: "media/33fight/combat.jpg", son: true },
     captures: [
       { src: "media/33fight/combat.jpg", legende: "Combat dans le parc" },
       { src: "media/33fight/versus.jpg", legende: "Fiche VS avant chaque combat" },

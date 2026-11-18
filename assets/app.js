@@ -25,9 +25,11 @@
 
   /* Toutes les vidéos tournent en boucle, sans clic, son coupé. Si la vidéo a du son, un bouton l'active ;
      dès qu'elle sort de l'écran, le son se coupe (et la vidéo se met en pause pour ne rien consommer). */
-  const boucles = [];
-  function boucle({ src, poster, titre, son, format = "paysage" }) {
-    const v = h("video", { src, poster, autoplay: "", muted: "", loop: "", playsinline: "", preload: "metadata", "aria-label": titre || "Vidéo" });
+  /* Rien n est téléchargé avant que la vidéo approche de l écran ; sur téléphone on prend la version légère (_m.mp4). */
+  const boucles = [], petitEcran = matchMedia("(max-width: 820px)").matches;
+  function boucle({ src, mobile, poster, titre, son, format = "paysage" }) {
+    const v = h("video", { poster, muted: "", loop: "", playsinline: "", preload: "none", "aria-label": titre || "Vidéo" });
+    v.dataset.src = petitEcran && mobile ? mobile : src;
     v.muted = true;
     const box = h("div", { class: `boucle ${format}` }, v, titre ? h("div", { class: "boucle-titre" }, titre) : null);
     if (son) {
@@ -44,9 +46,12 @@
     boucles.push(v);
     return box;
   }
+  const proche = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting && !e.target.src) { e.target.src = e.target.dataset.src; e.target.preload = "auto"; proche.unobserve(e.target); }
+  }), { rootMargin: "400px 0px" });
   const vio = new IntersectionObserver(es => es.forEach(e => {
     const v = e.target;
-    if (e.isIntersecting) { v.play().catch(() => {}); }
+    if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); }
     else { v.muted = true; v.pause(); }
   }), { threshold: 0.15 });
 
@@ -155,7 +160,7 @@
         chiffres(A.chiffres), tags(A.tags))),
     h("h4", { class: "sous-titre" }, "Comment ça marche"),
     h("div", { class: "pipeline reveal" }, A.etapes.map(([b, s]) => h("div", { class: "etape" }, h("b", {}, b), h("span", {}, s)))));
-  boucles.forEach(v => vio.observe(v));
+  boucles.forEach(v => { proche.observe(v); vio.observe(v); });
 
   /* ---------- 5. qui je suis ---------- */
   const M = P.moi;
@@ -178,8 +183,12 @@
       h("div", { class: "timeline" },
         h("div", {}, h("h4", {}, "Études"), M.etudes.map(item)),
         h("div", {}, h("h4", {}, "Expériences"), M.experiences.map(item))),
-      M.cv ? h("a", { class: "bouton", href: M.cv, download: "Gabriel Lecerf - CV.pdf" }, "Télécharger mon CV")
-           : h("span", { class: "bouton", "aria-disabled": "true" }, "CV : bientôt disponible"))));
+      h("div", { class: "contact-bloc", id: "contact" },
+        h("div", {}, h("h4", {}, "Me contacter"), h("p", {}, "Un poste, un stage, un projet ou une question : écris-moi, je réponds rapidement.")),
+        h("div", { class: "contact-actions" },
+          h("a", { class: "bouton", href: `mailto:${id.email}?subject=${encodeURIComponent("Contact depuis ton portfolio")}` }, "✉ Me contacter"),
+          M.cv ? h("a", { class: "bouton bouton-2", href: M.cv, download: "Gabriel Lecerf - CV.pdf" }, "Télécharger mon CV") : null,
+          h("span", { class: "contact-mail" }, id.email))))));
 
   $("#footer").append(
     h("div", {}, `© ${new Date().getFullYear()} ${isPlaceholder(id.nom) ? "" : id.nom}`),
